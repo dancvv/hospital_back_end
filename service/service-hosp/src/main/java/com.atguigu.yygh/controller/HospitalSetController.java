@@ -10,15 +10,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
-
+@CrossOrigin
 @RestController
 @RequestMapping("/admin/hosp/hospitalSet")
 public class HospitalSetController {
@@ -53,22 +51,28 @@ public class HospitalSetController {
 
     /**
      * @RequestBody(required = false)后面的内容可以为空，与之对应的为postmapping
+     * 此处加上body内容会出现报错，暂无法清除细节原因
      */
     @PostMapping("findPage/{current}/{limit}")
     public Result<Object> findPageHospSet(@PathVariable long current,
                                           @PathVariable long limit,
                                           @RequestBody(required = false) HospitalQueryVo hospitalQueryVo){
+//        @RequestBody(required = false) HospitalQueryVo hospitalQueryVo
+
+        System.out.println(hospitalQueryVo);
 //        创建page对象，当前页，每页记录数
         Page<HospitalSet> page = new Page<>(current,limit);
 //        构建条件
         QueryWrapper<HospitalSet> wrapper = new QueryWrapper<>();
         String hoscode = hospitalQueryVo.getHoscode();
         String hosname = hospitalQueryVo.getHosname();
-//        入参检验是否为空
-        if (!StringUtils.hasText(hosname)){
+//        入参检验是否为空，这里的逻辑出现过问题
+//        由于之前采用的是isEmpty()方法，现在采用hasText()方法
+//        使用方法完全一致
+        if (StringUtils.hasText(hosname)){
             wrapper.like("hosname",hospitalQueryVo.getHosname());
         }
-        if (!StringUtils.hasText(hoscode)){
+        if (StringUtils.hasText(hoscode)){
             wrapper.eq("hoscode",hospitalQueryVo.getHoscode());
         }
 //        此处报错是由于wrapper条件错误的写为object
