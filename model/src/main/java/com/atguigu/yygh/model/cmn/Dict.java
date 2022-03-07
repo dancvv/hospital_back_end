@@ -63,6 +63,8 @@ public class Dict {
     private String dictCode;
 
     @ApiModelProperty(value = "是否包含子节点")
+    // 添加这个字段是为了保证前端能够正常运行
+    // element显示树形结构需要
     @TableField(exist = false)
     private boolean hasChildren;
 

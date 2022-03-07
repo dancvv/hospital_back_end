@@ -58,8 +58,6 @@ public class HospitalSetController {
                                           @PathVariable long limit,
                                           @RequestBody(required = false) HospitalQueryVo hospitalQueryVo){
 //        @RequestBody(required = false) HospitalQueryVo hospitalQueryVo
-
-        System.out.println(hospitalQueryVo);
 //        创建page对象，当前页，每页记录数
         Page<HospitalSet> page = new Page<>(current,limit);
 //        构建条件
@@ -104,13 +102,12 @@ public class HospitalSetController {
     @GetMapping("getHospSet/{id}")
     public Result getHospSet(@PathVariable Long id){
 //        模拟异常
-        try {
-            int a=1/0;
-        }catch (Exception e){
-//            手动抛出异常
-            throw new YyghException("失败",201);
-        }
-
+//        try {
+//            int a=1/0;
+//        }catch (Exception e){
+////            手动抛出异常
+//            throw new YyghException("失败",201);
+//        }
         HospitalSet byId = hospitalSetService.getById(id);
         return Result.ok(byId);
     }
