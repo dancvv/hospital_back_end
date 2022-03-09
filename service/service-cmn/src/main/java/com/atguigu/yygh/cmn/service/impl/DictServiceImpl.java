@@ -1,12 +1,18 @@
 package com.atguigu.yygh.cmn.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.atguigu.yygh.cmn.mapper.DictMapper;
 import com.atguigu.yygh.cmn.service.DictService;
 import com.atguigu.yygh.model.cmn.Dict;
+import com.atguigu.yygh.vo.cmn.DictEeVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,6 +35,39 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
             dict.setHasChildren(isChildren);
         }
         return dicts;
+    }
+
+    /**
+     * 导出数据字典接口
+     * @param response
+     */
+    @Override
+    public void exportDictData(HttpServletResponse response) {
+//        设置下载信息
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+// 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+        String fileName = "dict";
+//        以下载方式打开
+        response.setHeader("Content-disposition", "attachment;filename="+ fileName + ".xlsx");
+        List<Dict> dictList = baseMapper.selectList(null);
+//        创建的数据实体类在model中已经创建
+//        Dict -- DictEevo,两个数据之间的转换
+        List<DictEeVo> dictVoList = new ArrayList<>();
+        for(Dict dict:dictList){
+            DictEeVo dictEeVo = new DictEeVo();
+//            操作的封装
+//            dictEeVo.setId();dict.getId()
+            BeanUtils.copyProperties(dict, dictEeVo);
+            dictVoList.add(dictEeVo);
+        }
+
+//        调用方法进行写操作
+        try {
+            EasyExcel.write(response.getOutputStream(), DictEeVo.class).sheet("dict").doWrite(dictVoList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
