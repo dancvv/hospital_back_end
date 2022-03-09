@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
@@ -20,10 +21,23 @@ public class DictController {
     @Autowired
     private DictService dictService;
 
-    // 根据数据id查询子数据列表
-    @Operation(summary = "根据数据id查询子数据列表")
-    @GetMapping("findChileData/{id}")
+    /**
+     * 导入数据字典
+     */
+    @PostMapping("importData")
+    public Result importDict(MultipartFile file){
+        dictService.importDictData(file);
+        return Result.ok();
+    }
+
+    /**
+     * 根据数据id查询子数据列表
+     * @param id
+     * @return
+     */
+    @GetMapping("findChildData/{id}")
     public Result findChildData(@PathVariable Long id){
+        System.out.println(id);
         List<Dict> list = dictService.findChildData(id);
         return Result.ok(list);
     }

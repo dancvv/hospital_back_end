@@ -24,6 +24,7 @@ public class Dict {
 
     private static final long serialVersionUID = 1L;
 
+//    id 不是自动增长，所以自动设置，不能继承base entity
     @ApiModelProperty(value = "id")
     private Long id;
 
