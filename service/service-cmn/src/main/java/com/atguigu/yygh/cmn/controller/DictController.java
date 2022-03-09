@@ -35,8 +35,9 @@ public class DictController {
      * @param id
      * @return
      */
-    @GetMapping("findChileData/{id}")
+    @GetMapping("findChildData/{id}")
     public Result findChildData(@PathVariable Long id){
+        System.out.println(id);
         List<Dict> list = dictService.findChildData(id);
         return Result.ok(list);
     }
