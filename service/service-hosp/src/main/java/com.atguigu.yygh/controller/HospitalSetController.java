@@ -29,7 +29,9 @@ public class HospitalSetController {
     public Result<Object> findAllHospitalSet(){
 //        调用service的方法
 //        返回的是json数据，默认做的转换
+        System.out.println("find all controller");
         List<HospitalSet> list = hospitalSetService.list();
+        System.out.println(list);
         return Result.ok(list);
     }
 //    2.删除医院逻辑设置
