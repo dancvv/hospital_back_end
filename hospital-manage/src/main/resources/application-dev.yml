@@ -30,7 +30,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://210.30.97.238:3310/yygh_manage?characterEncoding=utf-8&useSSL=false
     username: root
-    password: root
+    password: 123456
     hikari:
       connection-test-query: SELECT 1
       connection-timeout: 60000

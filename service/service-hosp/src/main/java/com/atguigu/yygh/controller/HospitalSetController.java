@@ -1,6 +1,5 @@
 package com.atguigu.yygh.controller;
 
-import com.atguigu.yygh.common.exception.YyghException;
 import com.atguigu.yygh.common.result.Result;
 import com.atguigu.yygh.common.utils.MD5;
 import com.atguigu.yygh.model.hosp.HospitalSet;
