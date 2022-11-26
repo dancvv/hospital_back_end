@@ -4,7 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.atguigu.yygh.model.hosp.Department;
 import com.atguigu.yygh.repository.DepartmentRepository;
 import com.atguigu.yygh.service.DepartmentService;
+import com.atguigu.yygh.vo.hosp.DepartmentQueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -30,5 +32,29 @@ public class DepartmentServiceImpl implements DepartmentService {
             department.setIsDeleted(0);
             departmentRepository.save(department);
         }
+    }
+
+//   查询科室接口
+    @Override
+    public Page<Department> selectPage(int page, int limit, DepartmentQueryVo departmentQueryVo) {
+        Pageable pageable =  PageRequest.of(page - 1, limit);
+        Department department = new Department();
+//        创建适配器，如何使用查询条件
+        ExampleMatcher matching = ExampleMatcher.matching()//构建对象
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)//改变默认字符
+                .withIgnoreCase(true);//改变默认大小写忽略方式：忽略大小写
+//        创建实例
+        Example<Department> example = Example.of(department, matching);
+        Page<Department> pages = departmentRepository.findAll(example, pageable);
+        return pages;
+    }
+
+    @Override
+    public void remove(String hoscode, String depcode) {
+        Department department = departmentRepository.getDepartmentByHoscodeAndDepcode(hoscode, depcode);
+        if(null != department){
+            departmentRepository.deleteById(department.getId());
+        }
+
     }
 }

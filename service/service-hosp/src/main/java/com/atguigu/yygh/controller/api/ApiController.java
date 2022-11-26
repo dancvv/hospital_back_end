@@ -5,11 +5,14 @@ import com.atguigu.yygh.common.helper.HttpRequestHelper;
 import com.atguigu.yygh.common.result.Result;
 import com.atguigu.yygh.common.result.ResultCodeEnum;
 import com.atguigu.yygh.common.utils.MD5;
+import com.atguigu.yygh.model.hosp.Department;
 import com.atguigu.yygh.model.hosp.Hospital;
 import com.atguigu.yygh.service.DepartmentService;
 import com.atguigu.yygh.service.HospitalService;
 import com.atguigu.yygh.service.HospitalSetService;
+import com.atguigu.yygh.vo.hosp.DepartmentQueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +31,53 @@ public class ApiController {
     private HospitalSetService hospitalSetService;
     @Autowired
     private DepartmentService departmentService;
+//    删除科室接口
+    @PostMapping("/department/remove")
+    public Result<Object> removeDepartment(HttpServletRequest request){
+        //        获取传递过来的医院信息
+        Map<String, String[]> requestMap = request.getParameterMap();
+        Map<String, Object> paramMap = HttpRequestHelper.switchMap(requestMap);
+//        获取医院编号
+        String hoscode = paramMap.get("hoscode").toString();
+        String depcode = paramMap.get("depcode").toString();
+        if(!StringUtils.hasLength(hoscode)){
+            throw new YyghException(ResultCodeEnum.PARAM_ERROR);
+        }
+//        签名校验
+        String hospSign = paramMap.get("sign").toString();
+        String signKey = hospitalSetService.getSignKey(hoscode);
+        String signKeyMd5 = MD5.encrypt(signKey);
+        if(!signKeyMd5.equals(hospSign)){
+            throw new YyghException(ResultCodeEnum.SIGN_ERROR);
+        }
+
+        departmentService.remove(hoscode, depcode);
+        return Result.ok();
+
+    }
+//    查询科室接口
+    @PostMapping("department/list")
+    public Result<Object> findDepartment(HttpServletRequest request){
+ //        获取传递过来的医院信息
+        Map<String, String[]> requestMap = request.getParameterMap();
+        Map<String, Object> paramMap = HttpRequestHelper.switchMap(requestMap);
+//        获取医院编号
+        String hoscode = paramMap.get("hoscode").toString();
+//        当前页和每页记录数
+        int page = !StringUtils.hasLength(String.valueOf(paramMap.get("page"))) ? 1 : Integer.parseInt(paramMap.get("page").toString());
+        int limit = !StringUtils.hasLength(String.valueOf(paramMap.get("limit"))) ? 1 : Integer.parseInt(paramMap.get("limit").toString());
+//        签名校验
+        String hospSign = paramMap.get("sign").toString();
+        String signKey = hospitalSetService.getSignKey(hoscode);
+        String signKeyMd5 = MD5.encrypt(signKey);
+        if(!signKeyMd5.equals(hospSign)){
+            throw new YyghException(ResultCodeEnum.SIGN_ERROR);
+        }
+        DepartmentQueryVo departmentQueryVo = new DepartmentQueryVo();
+        departmentQueryVo.setHoscode(hoscode);
+        Page<Department> pageModel = departmentService.selectPage(page, limit, departmentQueryVo);
+        return Result.ok(pageModel);
+    }
 //    上传科室接口
     @PostMapping("saveDepartment")
     public Result<Object> saveDepartment(HttpServletRequest request){
