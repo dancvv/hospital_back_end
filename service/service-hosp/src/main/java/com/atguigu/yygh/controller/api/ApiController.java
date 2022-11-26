@@ -5,6 +5,7 @@ import com.atguigu.yygh.common.helper.HttpRequestHelper;
 import com.atguigu.yygh.common.result.Result;
 import com.atguigu.yygh.common.result.ResultCodeEnum;
 import com.atguigu.yygh.common.utils.MD5;
+import com.atguigu.yygh.model.hosp.Hospital;
 import com.atguigu.yygh.service.HospitalService;
 import com.atguigu.yygh.service.HospitalSetService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,28 @@ public class ApiController {
     private HospitalService hospitalService;
     @Autowired
     private HospitalSetService hospitalSetService;
+//    查询医院
+    @PostMapping("/hospital/show")
+    public Result<Object> getHospital(HttpServletRequest request){
+//        获取传递过来的医院信息
+        Map<String, String[]> requestMap = request.getParameterMap();
+        Map<String, Object> paramMap = HttpRequestHelper.switchMap(requestMap);
+//        获取医院编号
+        String hoscode = paramMap.get("hoscode").toString();
+//        查询签名
+        String hospSign = paramMap.get("sign").toString();
+//        查询数据库，查询签名
+        String signKey = hospitalSetService.getSignKey(hoscode);
+//        3 把数据库查询到的签名进行md5加密
+        String signKeyMd5 = MD5.encrypt(signKey);
+//        4 判断签名是否一致
+        if(!hospSign.equals(signKeyMd5)){
+            throw new YyghException(ResultCodeEnum.SIGN_ERROR.getMessage(), ResultCodeEnum.SIGN_ERROR.getCode());
+        }
+//        调用service方法实现根据医院编号查询
+        Hospital hospital = hospitalService.getByHoscode(hoscode);
+        return Result.ok(hospital);
+    }
 //    上传医院接口
     @PostMapping("saveHospital")
     public Result<Object> saveHosp(HttpServletRequest request){
