@@ -7,10 +7,13 @@ import com.atguigu.yygh.common.result.ResultCodeEnum;
 import com.atguigu.yygh.common.utils.MD5;
 import com.atguigu.yygh.model.hosp.Department;
 import com.atguigu.yygh.model.hosp.Hospital;
+import com.atguigu.yygh.model.hosp.Schedule;
 import com.atguigu.yygh.service.DepartmentService;
 import com.atguigu.yygh.service.HospitalService;
 import com.atguigu.yygh.service.HospitalSetService;
+import com.atguigu.yygh.service.ScheduleService;
 import com.atguigu.yygh.vo.hosp.DepartmentQueryVo;
+import com.atguigu.yygh.vo.hosp.ScheduleQueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
@@ -31,6 +34,72 @@ public class ApiController {
     private HospitalSetService hospitalSetService;
     @Autowired
     private DepartmentService departmentService;
+    @Autowired
+    private ScheduleService scheduleService;
+//    删除排班接口
+    @PostMapping("schedule/remove")
+    public Result<Object> remove(HttpServletRequest request){
+        //        获取传递过来的医院信息
+        Map<String, String[]> requestMap = request.getParameterMap();
+        Map<String, Object> paramMap = HttpRequestHelper.switchMap(requestMap);
+//        获取医院编号和排班编号
+        String hoscode = paramMap.get("hoscode").toString();
+        String hosScheduleId = paramMap.get("hosScheduleId").toString();
+//        签名校验
+        String hospSign = paramMap.get("sign").toString();
+        String signKey = hospitalSetService.getSignKey(hoscode);
+        String signKeyMd5 = MD5.encrypt(signKey);
+        if(!signKeyMd5.equals(hospSign)){
+            throw new YyghException(ResultCodeEnum.SIGN_ERROR);
+        }
+        scheduleService.remove(hoscode, hosScheduleId);
+        return Result.ok();
+    }
+//    查询排班接口
+    @PostMapping("schedule/list")
+    public Result<Object> findSchedule(HttpServletRequest request){
+         //        获取传递过来的医院信息
+        Map<String, String[]> requestMap = request.getParameterMap();
+        Map<String, Object> paramMap = HttpRequestHelper.switchMap(requestMap);
+//        获取医院编号
+        String hoscode = paramMap.get("hoscode").toString();
+//        获取科室编号,(接口并没有传)
+//        String depcode = paramMap.get("depcode").toString();
+//        当前页和每页记录数
+        int page = !StringUtils.hasLength(String.valueOf(paramMap.get("page"))) ? 1 : Integer.parseInt(paramMap.get("page").toString());
+        int limit = !StringUtils.hasLength(String.valueOf(paramMap.get("limit"))) ? 1 : Integer.parseInt(paramMap.get("limit").toString());
+//        签名校验
+        String hospSign = paramMap.get("sign").toString();
+        String signKey = hospitalSetService.getSignKey(hoscode);
+        String signKeyMd5 = MD5.encrypt(signKey);
+        if(!signKeyMd5.equals(hospSign)){
+            throw new YyghException(ResultCodeEnum.SIGN_ERROR);
+        }
+        ScheduleQueryVo scheduleQueryVo = new ScheduleQueryVo();
+        scheduleQueryVo.setHoscode(hoscode);
+//        scheduleQueryVo.setDepcode(depcode);
+//        调用service方法
+        Page<Schedule> pageModel = scheduleService.selectPageSchedule(page, limit, scheduleQueryVo);
+        return Result.ok(pageModel);
+    }
+//    上传排班接口
+    @PostMapping("saveSchedule")
+    public Result<Object> saveSchedule(HttpServletRequest request){
+        //        获取传递过来的医院信息
+        Map<String, String[]> requestMap = request.getParameterMap();
+        Map<String, Object> paramMap = HttpRequestHelper.switchMap(requestMap);
+//        签名校验
+        String hoscode = paramMap.get("hoscode").toString();
+        String hospSign = paramMap.get("sign").toString();
+        String signKey = hospitalSetService.getSignKey(hoscode);
+        String signKeyMd5 = MD5.encrypt(signKey);
+        if(!signKeyMd5.equals(hospSign)){
+            throw new YyghException(ResultCodeEnum.SIGN_ERROR);
+        }
+        scheduleService.save(paramMap);
+        return Result.ok();
+
+    }
 //    删除科室接口
     @PostMapping("/department/remove")
     public Result<Object> removeDepartment(HttpServletRequest request){
