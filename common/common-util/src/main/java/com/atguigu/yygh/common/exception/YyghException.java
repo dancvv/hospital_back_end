@@ -1,5 +1,6 @@
 package com.atguigu.yygh.common.exception;
 
+import com.atguigu.yygh.common.result.ResultCodeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -15,6 +16,10 @@ public class YyghException extends RuntimeException{
     public YyghException(String message,Integer code){
         super(message);
         this.code=code;
+    }
+    public YyghException(ResultCodeEnum resultCodeEnum){
+        super(resultCodeEnum.getMessage());
+        this.code = resultCodeEnum.getCode();
     }
 
 }
