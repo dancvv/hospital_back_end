@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.10-SNAPSHOT</version>
+		<version>2.3.12.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.atguigu.yygh</groupId>
@@ -21,21 +21,29 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
+		<alibaba.version>2.2.6.RELEASE</alibaba.version>
+		<cloud.version>Horton.SR9</cloud.version>
 	</properties>
 
 	<!--    配置dependencyManagement 锁定依赖的版本-->
 	<dependencyManagement>
 		<dependencies>
+<!--			nacos父依赖-->
+			<dependency>
+				<groupId>com.alibaba.cloud</groupId>
+				<artifactId>spring-cloud-alibaba-dependencies</artifactId>
+				<version>${alibaba.versioin}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>Hoxton.RELEASE</version>
+				<version>${cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-alibaba-dependencies</artifactId>
-				<version>0.9.0.RELEASE</version>
-			</dependency>
+
 			<!--            mybatis 持久层-->
 			<dependency>
 				<groupId>com.baomidou</groupId>

@@ -5,6 +5,7 @@ import com.atguigu.yygh.cmn.listener.DictListener;
 import com.atguigu.yygh.cmn.mapper.DictMapper;
 import com.atguigu.yygh.cmn.service.DictService;
 import com.atguigu.yygh.model.cmn.Dict;
+import com.atguigu.yygh.model.hosp.Hospital;
 import com.atguigu.yygh.vo.cmn.DictEeVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -12,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -103,5 +105,33 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
             e.printStackTrace();
         }
 
+    }
+
+    //    根据dictcode 和value查询
+    @Override
+    public String getDictName(String dictcode, String value) {
+//        如果dictcode为空，直接根据value查询
+        if(!StringUtils.hasLength(dictcode)){
+//            直接根据value查询
+            QueryWrapper<Dict> wrapper = new QueryWrapper<>();
+            wrapper.eq("value", value);
+            Dict dict = baseMapper.selectOne(wrapper);
+            return dict.getName();
+        }else {
+//            如果dictcode不为空，根据dictcode和value查询
+//            根据dictcode查询dict对象，得到dict的id值
+            Dict dictbyDictCode = this.getDictbyDictCode(dictcode);
+            QueryWrapper<Dict> wrapper = new QueryWrapper<>();
+            wrapper.eq("parent_id", dictbyDictCode.getParentId())
+                    .eq("value", dictbyDictCode.getValue());
+            Dict dict = baseMapper.selectOne(wrapper);
+            return dict.getName();
+        }
+    }
+    private Dict getDictbyDictCode(String dictCode){
+        QueryWrapper<Dict> wrapper = new QueryWrapper<>();
+        wrapper.eq("dict_code",dictCode);
+        Dict dict = baseMapper.selectOne(wrapper);
+        return dict;
     }
 }

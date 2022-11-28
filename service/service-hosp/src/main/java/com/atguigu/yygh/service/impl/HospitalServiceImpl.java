@@ -4,8 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.atguigu.yygh.model.hosp.Hospital;
 import com.atguigu.yygh.repository.HospitalRepository;
 import com.atguigu.yygh.service.HospitalService;
+import com.atguigu.yygh.vo.hosp.HospitalQueryVo;
+import com.atguigu.yygh.vo.hosp.HospitalSetQueryVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -44,5 +47,23 @@ public class HospitalServiceImpl implements HospitalService {
     public Hospital getByHoscode(String hoscode) {
         Hospital hospital = hospitalRepository.getHospitalByHoscode(hoscode);
         return hospital;
+    }
+
+
+    //    条件查询分页
+    @Override
+    public Page<Hospital> selectHospPage(int page, int limit, HospitalQueryVo hospitalQueryVo) {
+//        创建pageable对象
+        Pageable pageable = PageRequest.of(page - 1, limit);
+//        创建条件适配器
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                .withIgnoreCase(true);
+//        hospitalSetQueryVo转换hospital对象
+        Hospital hospital = new Hospital();
+        BeanUtils.copyProperties(hospitalQueryVo, hospital);
+        Example<Hospital> example = Example.of(hospital, matcher);
+        Page<Hospital> all = hospitalRepository.findAll(example, pageable);
+        return all;
     }
 }

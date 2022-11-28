@@ -53,4 +53,17 @@ public class DictController {
         dictService.exportDictData(response);
 //        return Result.ok();
     }
+//    根据dictcode 和value查询
+    @GetMapping("getName/{dictcode}/{value}")
+    public String getName(@PathVariable String dictcode,
+                          @PathVariable String value){
+        String dictname = dictService.getDictName(dictcode, value);
+        return dictname;
+    }
+//    根据value查询
+    @GetMapping("getName/{value}")
+    public String getName(@PathVariable String value){
+        String dictName = dictService.getDictName("", value);
+        return dictName;
+    }
 }
