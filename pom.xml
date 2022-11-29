@@ -7,7 +7,7 @@
 		<module>common</module>
 		<module>model</module>
 		<module>service</module>
-		<module>service_client</module>
+		<module>service-client</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -23,7 +23,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<alibaba.version>2.2.6.RELEASE</alibaba.version>
-		<cloud.version>Horton.SR9</cloud.version>
+		<cloud.version>Hoxton.SR12</cloud.version>
 	</properties>
 
 	<!--    配置dependencyManagement 锁定依赖的版本-->
@@ -33,7 +33,7 @@
 			<dependency>
 				<groupId>com.alibaba.cloud</groupId>
 				<artifactId>spring-cloud-alibaba-dependencies</artifactId>
-				<version>${alibaba.versioin}</version>
+				<version>${alibaba.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -110,6 +110,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.3.12.RELEASE</version>
 			</plugin>
 		</plugins>
 	</build>

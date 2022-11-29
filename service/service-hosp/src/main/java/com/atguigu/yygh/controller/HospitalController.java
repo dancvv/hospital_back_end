@@ -23,6 +23,12 @@ public class HospitalController {
                                    HospitalQueryVo hospitalQueryVo){
         Page<Hospital> pageMoldel = hospitalService.selectHospPage(page, limit, hospitalQueryVo);
         return Result.ok(pageMoldel);
-
+    }
+    @GetMapping("/list2/{page}/{limit}")
+    public Result<Object> listHosp2(@PathVariable int page,
+                                   @PathVariable int limit,
+                                   HospitalQueryVo hospitalQueryVo) {
+        Page<Hospital> pageMoldel = hospitalService.getPages(page, limit, hospitalQueryVo);
+        return Result.ok(pageMoldel);
     }
 }

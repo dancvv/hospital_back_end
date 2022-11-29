@@ -1,11 +1,11 @@
 package com.atguigu.yygh.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.atguigu.yygh.cmn.client.DictFeignClient;
 import com.atguigu.yygh.model.hosp.Hospital;
 import com.atguigu.yygh.repository.HospitalRepository;
 import com.atguigu.yygh.service.HospitalService;
 import com.atguigu.yygh.vo.hosp.HospitalQueryVo;
-import com.atguigu.yygh.vo.hosp.HospitalSetQueryVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -19,6 +19,8 @@ public class HospitalServiceImpl implements HospitalService {
 
     @Autowired
     private HospitalRepository hospitalRepository;
+    @Autowired
+    private DictFeignClient dictFeignClient;
 
     @Override
     public void save(Map<String, Object> paramMap) {
@@ -63,7 +65,29 @@ public class HospitalServiceImpl implements HospitalService {
         Hospital hospital = new Hospital();
         BeanUtils.copyProperties(hospitalQueryVo, hospital);
         Example<Hospital> example = Example.of(hospital, matcher);
-        Page<Hospital> all = hospitalRepository.findAll(example, pageable);
-        return all;
+        Page<Hospital> pages = hospitalRepository.findAll(example, pageable);
+        System.out.println("data output");
+        String s = pages.toString();
+        System.out.println(s);
+//        获取查询list集合，遍历进行医院等级封装
+        pages.getContent().stream().forEach(item ->{
+            this.setHostpitalHosType(item);
+        });
+        return pages;
+    }
+
+
+//        获取查询list集合，遍历进行医院等级封装
+    private Hospital setHostpitalHosType(Hospital item) {
+//        根据dictcode和value获取医院等级名称
+        String hostypeString = dictFeignClient.getName("Hostype", item.getHostype());
+//        查询省市区
+        String provinceString = dictFeignClient.getName(item.getProvinceCode());
+        String cityString = dictFeignClient.getName(item.getCityCode());
+        String districtString = dictFeignClient.getName(item.getDistrictCode());
+
+        item.getParam().put("fullAddress", provinceString + cityString + districtString);
+        item.getParam().put("hostype", hostypeString);
+        return item;
     }
 }
