@@ -66,7 +66,6 @@ public class HospitalServiceImpl implements HospitalService {
         BeanUtils.copyProperties(hospitalQueryVo, hospital);
         Example<Hospital> example = Example.of(hospital, matcher);
         Page<Hospital> pages = hospitalRepository.findAll(example, pageable);
-        System.out.println("data output");
         String s = pages.toString();
         System.out.println(s);
 //        获取查询list集合，遍历进行医院等级封装
@@ -79,7 +78,9 @@ public class HospitalServiceImpl implements HospitalService {
 
 //        获取查询list集合，遍历进行医院等级封装
     private Hospital setHostpitalHosType(Hospital item) {
+        System.out.println(item.toString());
 //        根据dictcode和value获取医院等级名称
+        System.out.println(item.getCityCode());
         String hostypeString = dictFeignClient.getName("Hostype", item.getHostype());
 //        查询省市区
         String provinceString = dictFeignClient.getName(item.getProvinceCode());

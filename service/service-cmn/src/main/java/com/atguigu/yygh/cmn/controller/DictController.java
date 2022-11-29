@@ -54,10 +54,10 @@ public class DictController {
 //        return Result.ok();
     }
 //    根据dictcode 和value查询
-    @GetMapping("getName/{dictcode}/{value}")
-    public String getName(@PathVariable String dictcode,
+    @GetMapping("getName/{parentDictCode}/{value}")
+    public String getName(@PathVariable String parentDictCode,
                           @PathVariable String value){
-        String dictname = dictService.getDictName(dictcode, value);
+        String dictname = dictService.getDictName(parentDictCode, value);
         return dictname;
     }
 //    根据value查询
@@ -65,5 +65,11 @@ public class DictController {
     public String getName(@PathVariable String value){
         String dictName = dictService.getDictName("", value);
         return dictName;
+    }
+//    根据dictcode获取下级节点
+    @GetMapping(value = "findByDictCode/{dictcode}")
+    public Result<List<Dict>> findByDictCode(@PathVariable String dictcode){
+        List<Dict> list = dictService.findByDictCode(dictcode);
+        return Result.ok(list);
     }
 }
