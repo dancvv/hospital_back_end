@@ -122,8 +122,8 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
 //            根据dictcode查询dict对象，得到dict的id值
             Dict dictbyDictCode = this.getDictbyDictCode(dictcode);
             QueryWrapper<Dict> wrapper = new QueryWrapper<>();
-            wrapper.eq("parent_id", dictbyDictCode.getParentId())
-                    .eq("value", dictbyDictCode.getValue());
+            wrapper.eq("parent_id", dictbyDictCode.getId())
+                    .eq("value", value );
             Dict dict = baseMapper.selectOne(wrapper);
             return dict.getName();
         }
