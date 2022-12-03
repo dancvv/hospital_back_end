@@ -12,7 +12,9 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class HospitalServiceImpl implements HospitalService {
@@ -99,5 +101,21 @@ public class HospitalServiceImpl implements HospitalService {
         item.getParam().put("fullAddress", provinceString + cityString + districtString);
         item.getParam().put("hostype", hostypeString);
         return item;
+    }
+
+    // 医院详情信息
+    @Override
+    public Map<String, Object> getHospById(String id) {
+        // TODO Auto-generated method stub
+        Hospital hospital = hospitalRepository.findById(id).get();
+        Hospital hospital2 = this.setHostpitalHosType(hospital);
+        HashMap<String,Object> map = new HashMap<>();
+        // 医院基本信息（包含医院等级）
+        map.put("hospital", hospital2);
+        // 单独处理
+        map.put("bookingRule", hospital2.getBookingRule());
+        // 不需要重复返回
+        hospital2.setBookingRule(null);
+        return map;
     }
 }
