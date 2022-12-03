@@ -75,8 +75,17 @@ public class HospitalServiceImpl implements HospitalService {
         return pages;
     }
 
+//    update the hosp status
+    @Override
+    public void updateStatus(String id, Integer status) {
+        Hospital hospital = hospitalRepository.findById(id).get();
+        hospital.setStatus(status);
+        hospital.setUpdateTime(new Date());
+        hospitalRepository.save(hospital);
+    }
 
-//        获取查询list集合，遍历进行医院等级封装
+
+    //        获取查询list集合，遍历进行医院等级封装
     private Hospital setHostpitalHosType(Hospital item) {
         System.out.println(item.toString());
 //        根据dictcode和value获取医院等级名称

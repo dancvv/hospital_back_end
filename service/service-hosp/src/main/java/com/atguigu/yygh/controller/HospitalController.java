@@ -23,4 +23,11 @@ public class HospitalController {
         Page<Hospital> pageMoldel = hospitalService.selectHospPage(page, limit, hospitalQueryVo);
         return Result.ok(pageMoldel);
     }
+//    update the hospital status
+    @GetMapping("updateHospStatus/{id}/{status}")
+    public Result<Object> updateHospStatus(@PathVariable String id, @PathVariable Integer status){
+        hospitalService.updateStatus(id, status);
+        return Result.ok();
+
+    }
 }
