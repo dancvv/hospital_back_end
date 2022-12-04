@@ -188,7 +188,6 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     // 封装排班详情其他值 医院名称/科室名称/日期对应星期
     private void packageSchedule(Schedule item) {
-        System.out.println(item.toString());
         // 设置医院名称
         item.getParam().put("hosname", hospitalService.getHospName(item.getHoscode()));
         // 设置科室名称
