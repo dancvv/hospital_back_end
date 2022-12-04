@@ -1,6 +1,7 @@
 package com.atguigu.yygh.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.nacos.client.naming.core.HostReactor;
 import com.atguigu.yygh.cmn.client.DictFeignClient;
 import com.atguigu.yygh.model.hosp.Hospital;
 import com.atguigu.yygh.repository.HospitalRepository;
@@ -117,5 +118,17 @@ public class HospitalServiceImpl implements HospitalService {
         // 不需要重复返回
         hospital2.setBookingRule(null);
         return map;
+    }
+
+    // 获取医院名称
+    @Override
+    public String getHospName(String hoscode) {
+        // TODO Auto-generated method stub
+        Hospital hospitalByHoscode = hospitalRepository.getHospitalByHoscode(hoscode);
+        // 如果不为空返回数据
+        if(hospitalByHoscode != null){
+            return hospitalByHoscode.getHosname();
+        }
+        return null;
     }
 }
