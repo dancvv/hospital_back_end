@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -106,4 +105,16 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
         return result;
     }
+
+    // 根据科室编号，和医院编号，查询科室名称
+    @Override
+    public String getDepName(String hoscode, String depcode) {
+        // TODO Auto-generated method stub
+        Department department =  departmentRepository.getDepartmentByHoscodeAndDepcode(hoscode, depcode);
+        if(department != null){
+            return department.getDepname();
+        }
+        return null;
+    }
+
 }

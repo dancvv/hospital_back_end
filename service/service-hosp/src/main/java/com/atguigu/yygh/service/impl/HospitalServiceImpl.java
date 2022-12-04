@@ -70,7 +70,7 @@ public class HospitalServiceImpl implements HospitalService {
         Example<Hospital> example = Example.of(hospital, matcher);
         Page<Hospital> pages = hospitalRepository.findAll(example, pageable);
         String s = pages.toString();
-        System.out.println(s);
+        // System.out.println(s);
 //        获取查询list集合，遍历进行医院等级封装
         pages.getContent().stream().forEach(item ->{
             this.setHostpitalHosType(item);

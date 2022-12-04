@@ -3,6 +3,7 @@ package com.atguigu.yygh.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.atguigu.yygh.model.hosp.Schedule;
 import com.atguigu.yygh.repository.ScheduleRepository;
+import com.atguigu.yygh.service.DepartmentService;
 import com.atguigu.yygh.service.HospitalService;
 import com.atguigu.yygh.service.ScheduleService;
 import com.atguigu.yygh.vo.hosp.BookingScheduleRuleVo;
@@ -33,6 +34,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     private MongoTemplate mongoTemplate;
     @Autowired
     private HospitalService hospitalService;
+    @Autowired
+    private DepartmentService departmentService;
 
     // 上传排班接口
     @Override
@@ -168,6 +171,30 @@ public class ScheduleServiceImpl implements ScheduleService {
                 break;
         }
         return dayOfWeek;
+    }
+
+    // 根据医院编号、科室编号和工作日期，查询排班详细信息
+    @Override
+    public List<Schedule> getDetailSchedule(String hoscode, String depcode, String workDate) {
+        // TODO Auto-generated method stub
+        // 根据参数查询mongodb
+        List<Schedule> scheduleList = scheduleRepository.findScheduleByHoscodeAndDepcodeAndWorkDate(hoscode, depcode, new DateTime(workDate).toDate());
+        // 把得到listj集合遍历，向设置其他值：医院名称、科室名称、日期对应星期
+        scheduleList.stream().forEach(item -> {
+            this.packageSchedule(item);
+        });
+        return scheduleList;
+    }
+
+    // 封装排班详情其他值 医院名称/科室名称/日期对应星期
+    private void packageSchedule(Schedule item) {
+        System.out.println(item.toString());
+        // 设置医院名称
+        item.getParam().put("hosname", hospitalService.getHospName(item.getHoscode()));
+        // 设置科室名称
+        item.getParam().put("depname", departmentService.getDepName(item.getHoscode(), item.getDepcode()));
+        // 设置日期对应星期
+        item.getParam().put("dayOfWeek", this.getDayOfWeek(new DateTime(item.getWorkDate())));
     }
 
 }
