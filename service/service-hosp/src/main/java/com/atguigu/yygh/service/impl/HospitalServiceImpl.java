@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class HospitalServiceImpl implements HospitalService {
@@ -130,5 +127,11 @@ public class HospitalServiceImpl implements HospitalService {
             return hospitalByHoscode.getHosname();
         }
         return null;
+    }
+
+    //    根据医院名称查询
+    @Override
+    public List<Hospital> findByHosname(String hosname) {
+        return hospitalRepository.findHospitalByHosnameLike(hosname);
     }
 }
