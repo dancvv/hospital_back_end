@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-@CrossOrigin
+//@CrossOrigin
 @RestController
 @Schema(defaultValue = "数据字典接口")
 @RequestMapping("/admin/cmn/dict")
