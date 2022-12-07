@@ -27,4 +27,7 @@ public interface HospitalService {
 
     //    根据医院名称查询
     List<Hospital> findByHosname(String hosname);
+
+    //    根据医院编号获取科室
+    Map<String, Object> item(String hoscode);
 }
