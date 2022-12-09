@@ -1,7 +1,7 @@
 package com.atguigu.yygh.msm.utils;
 
-import lombok.Value;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,7 +21,6 @@ public class ConstantPropertiesUtils implements InitializingBean {
         REGION_Id = regionId;
         ACCESS_KEY_ID = accessKeyId;
         SECRET = secret;
-
     }
 
 }

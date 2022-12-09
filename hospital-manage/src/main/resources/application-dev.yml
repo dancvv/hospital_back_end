@@ -30,7 +30,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://210.30.97.238:3310/yygh_manage?characterEncoding=utf-8&useSSL=false
     username: root
-    password: 123456
+    password: ENC(NV849J4++yCuVnTKiWD6jw==)
     hikari:
       connection-test-query: SELECT 1
       connection-timeout: 60000
@@ -42,3 +42,7 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
