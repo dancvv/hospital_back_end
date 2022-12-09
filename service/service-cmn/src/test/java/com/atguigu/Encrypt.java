@@ -19,10 +19,5 @@ public class Encrypt {
         System.out.println(encryptor.encrypt("210.30.97.238:8849"));
         System.out.println("server add");
         System.out.println(encryptor.encrypt("210.30.97.238"));
-        System.out.println("accessId");
-        System.out.println(encryptor.encrypt("LTAI5tMCenC3SnWwNvi1Pxhz"));
-        System.out.println("sercret");
-        System.out.println(encryptor.encrypt("kJfg2bg09jQlLFqpS588e7DD2ehSx0"));
-
     }
 }
