@@ -9,6 +9,8 @@ import com.atguigu.yygh.user.service.UserInfoService;
 import com.atguigu.yygh.vo.user.LoginVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -17,6 +19,8 @@ import java.util.Map;
 
 @Service
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
     //    用户手机号登陆接口
     @Override
     public Map<String, Object> loginUser(LoginVo loginVo) {
@@ -28,6 +32,12 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             throw new YyghException(ResultCodeEnum.PARAM_ERROR);
         }
 //        判断手机验证码和输入的验证码是否一致
+        String redisCode = redisTemplate.opsForValue().get(phone);
+        if(!redisCode.equals(code)){
+            throw new YyghException(ResultCodeEnum.CODE_ERROR);
+        }
+
+//        判断是否第一次登陆；根据手机号查询数据库，如果不存在相同手机号就是第一次登录
         QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
         wrapper.eq("phone", phone);
         UserInfo userInfo = baseMapper.selectOne(wrapper);
@@ -38,7 +48,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             userInfo.setStatus(1);
             this.save(userInfo);
         }
-//        判断是否第一次登陆；根据手机号查询数据库，如果不存在相同手机号就是第一次登录
+//        校验是否被禁用
         if(userInfo.getStatus() == 0){
             throw new YyghException(ResultCodeEnum.LOGIN_DISABLED_ERROR);
         }
