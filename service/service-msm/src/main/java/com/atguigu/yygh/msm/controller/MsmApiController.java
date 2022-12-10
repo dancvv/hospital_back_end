@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -36,7 +37,7 @@ public class MsmApiController {
         boolean isSend = msmService.send(phone, code);
 //        生成验证码放到redis里面，设置有效时间
         if(isSend){
-            redisTemplate.opsForValue().set(phone, code, 2, TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set(phone, code, 5, TimeUnit.MINUTES);
             return Result.ok();
         }else {
             return Result.fail().message("发送短信失败");
