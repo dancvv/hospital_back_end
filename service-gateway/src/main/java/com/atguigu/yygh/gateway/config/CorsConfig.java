@@ -1,4 +1,4 @@
-package com.atguigu.yygh.gateway;
+package com.atguigu.yygh.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
