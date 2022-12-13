@@ -28,6 +28,11 @@
             <artifactId>commons-pool2</artifactId>
             <version>2.6.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.atguigu.yygh</groupId>
+            <artifactId>common-util</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 

@@ -3,10 +3,12 @@ package com.atguigu.yygh.user.service.impl;
 import com.atguigu.yygh.common.exception.YyghException;
 import com.atguigu.yygh.common.helper.JwtHelper;
 import com.atguigu.yygh.common.result.ResultCodeEnum;
+import com.atguigu.yygh.enums.AuthStatusEnum;
 import com.atguigu.yygh.model.user.UserInfo;
 import com.atguigu.yygh.user.mapper.UserInfoMapper;
 import com.atguigu.yygh.user.service.UserInfoService;
 import com.atguigu.yygh.vo.user.LoginVo;
+import com.atguigu.yygh.vo.user.UserAuthVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -88,5 +91,16 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         wrapper.eq("openid", openid);
         UserInfo userInfo = baseMapper.selectOne(wrapper);
         return userInfo;
+    }
+
+    @Override
+    public void userAuth(Long userId, UserAuthVo userAuthVo) {
+        UserInfo userInfo = baseMapper.selectById(userId);
+        userInfo.setName(userInfo.getName());
+        userInfo.setCertificatesType(userAuthVo.getCertificatesType());
+        userInfo.setCertificatesNo(userAuthVo.getCertificatesNo());
+        userInfo.setCertificatesUrl(userAuthVo.getCertificatesUrl());
+        userInfo.setAuthStatus(AuthStatusEnum.AUTH_RUN.getStatus());
+        baseMapper.updateById(userInfo);
     }
 }
