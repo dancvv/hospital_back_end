@@ -37,16 +37,31 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             throw new YyghException(ResultCodeEnum.CODE_ERROR);
         }
 
+        UserInfo userInfo = null;
+        if(!StringUtils.isEmpty(loginVo.getOpenid())){
+            userInfo = this.selectWxInfoOpenId(loginVo.getOpenid());
+            if(null != userInfo){
+                userInfo.setPhone(loginVo.getPhone());
+                this.updateById(userInfo);
+            }else {
+                throw new YyghException(ResultCodeEnum.DATA_ERROR);
+            }
+        }
+
+//        如果userinfo为空，进行正常手机登录
+        if(userInfo == null){
 //        判断是否第一次登陆；根据手机号查询数据库，如果不存在相同手机号就是第一次登录
-        QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
-        wrapper.eq("phone", phone);
-        UserInfo userInfo = baseMapper.selectOne(wrapper);
-        if(null == userInfo){
-            userInfo = new UserInfo();
-            userInfo.setName("");
-            userInfo.setPhone(phone);
-            userInfo.setStatus(1);
-            this.save(userInfo);
+            QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+            wrapper.eq("phone", phone);
+            userInfo = baseMapper.selectOne(wrapper);
+            if(null == userInfo){
+                userInfo = new UserInfo();
+                userInfo.setName("");
+                userInfo.setPhone(phone);
+                userInfo.setStatus(1);
+                this.save(userInfo);
+            }
+
         }
 //        校验是否被禁用
         if(userInfo.getStatus() == 0){
@@ -65,5 +80,13 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         String token = JwtHelper.createToken(userInfo.getId(), name);
         map.put("token", token);
         return map;
+    }
+
+    @Override
+    public UserInfo selectWxInfoOpenId(String openid) {
+        QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("openid", openid);
+        UserInfo userInfo = baseMapper.selectOne(wrapper);
+        return userInfo;
     }
 }

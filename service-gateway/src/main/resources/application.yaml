@@ -1,0 +1,10 @@
+jasypt:
+  encryptor:
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+    algorithm: PBEWithMD5AndDES
+server:
+  port: 80
+# spring configuration
+spring:
+  application:
+    name: service-gateway
