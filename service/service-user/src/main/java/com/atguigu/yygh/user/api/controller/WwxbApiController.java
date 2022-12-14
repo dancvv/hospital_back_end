@@ -100,12 +100,13 @@ public class WwxbApiController {
 //            判断userInfo是否有手机号，如果手机号为空，返回openid
 //            如果手机号不为空，返回openid值是空字符串
 //            前端判断：手机号是否需要绑定
-            if(StringUtils.isEmpty(userInfo.getPhone())) {
+            if(!StringUtils.isEmpty(userInfo.getPhone())) {
                 map.put("openid", userInfo.getOpenid());
             } else {
                 map.put("openid", "");
             }
             String token = JwtHelper.createToken(userInfo.getId(), name);
+            System.out.println("token: " + token);
             map.put("token", token);
 //            跳转到前端页面上
             return "redirect:"

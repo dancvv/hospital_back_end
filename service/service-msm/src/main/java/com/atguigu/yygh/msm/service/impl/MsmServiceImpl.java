@@ -26,7 +26,7 @@ public class MsmServiceImpl implements MsmService {
     public boolean send(String phone, String code) {
 //        判断手机号是否为空
         if(!StringUtils.hasLength(phone)){
-//           return  false;
+           return  false;
         }
 //        配置密钥信息
         StaticCredentialProvider provider = StaticCredentialProvider.create(Credential.builder()
@@ -58,9 +58,9 @@ public class MsmServiceImpl implements MsmService {
                 .templateCode("SMS_264155029")
                 .templateParam(JSONObject.toJSONString(param))
                 .build();
-        CompletableFuture<SendSmsResponse> response = client.sendSms(sendSmsRequest);
-        HashMap<String, Object> map = new HashMap<>();
         try {
+            CompletableFuture<SendSmsResponse> response = client.sendSms(sendSmsRequest);
+            HashMap<String, Object> map = new HashMap<>();
             SendSmsResponse sendSmsResponse = response.get();
             SendSmsResponseBody body = sendSmsResponse.getBody();
             boolean isOk = body.getMessage().equals("OK");

@@ -36,10 +36,12 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
 //        判断手机验证码和输入的验证码是否一致
         String redisCode = redisTemplate.opsForValue().get(phone);
+        assert redisCode != null;
         if(!redisCode.equals(code)){
             throw new YyghException(ResultCodeEnum.CODE_ERROR);
         }
 
+//        绑定手机号
         UserInfo userInfo = null;
         if(!StringUtils.isEmpty(loginVo.getOpenid())){
             userInfo = this.selectWxInfoOpenId(loginVo.getOpenid());
@@ -77,10 +79,14 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         HashMap<String, Object> map = new HashMap<>();
         String name = userInfo.getName();
         if(StringUtils.isEmpty(name)){
+            name = userInfo.getNickName();
+        }
+        if(StringUtils.isEmpty(name)){
             name = userInfo.getPhone();
         }
         map.put("name", name);
         String token = JwtHelper.createToken(userInfo.getId(), name);
+        System.out.println("token: " + token);
         map.put("token", token);
         return map;
     }
