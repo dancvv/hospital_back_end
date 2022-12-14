@@ -22,9 +22,9 @@ public class FileServiceImpl implements FileService {
         String endpoint = ConstantOssProperties.ENDPOINT;
         String accessKeyId = ConstantOssProperties.ACCESS_KEY_ID;
         String secret = ConstantOssProperties.SECRET;
+        String bucket = ConstantOssProperties.BUCKET;
         try {
 //            创建实例
-            String bucket = ConstantOssProperties.BUCKET;
 //        上传文件流
             OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, secret);
             InputStream inputStream = file.getInputStream();
