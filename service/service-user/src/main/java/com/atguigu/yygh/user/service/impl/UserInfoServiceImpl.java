@@ -102,7 +102,7 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     @Override
     public void userAuth(Long userId, UserAuthVo userAuthVo) {
         UserInfo userInfo = baseMapper.selectById(userId);
-        userInfo.setName(userInfo.getName());
+        userInfo.setName(userAuthVo.getName());
         userInfo.setCertificatesType(userAuthVo.getCertificatesType());
         userInfo.setCertificatesNo(userAuthVo.getCertificatesNo());
         userInfo.setCertificatesUrl(userAuthVo.getCertificatesUrl());
