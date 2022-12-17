@@ -1,4 +1,4 @@
-package com.atguigu.yygh.user.controller;
+package com.atguigu.yygh.user.api;
 
 import com.atguigu.yygh.common.result.Result;
 import com.atguigu.yygh.common.utils.AuthContextHolder;

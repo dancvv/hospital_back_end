@@ -9,7 +9,10 @@ import com.atguigu.yygh.user.mapper.UserInfoMapper;
 import com.atguigu.yygh.user.service.UserInfoService;
 import com.atguigu.yygh.vo.user.LoginVo;
 import com.atguigu.yygh.vo.user.UserAuthVo;
+import com.atguigu.yygh.vo.user.UserInfoQueryVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -108,5 +111,49 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         userInfo.setCertificatesUrl(userAuthVo.getCertificatesUrl());
         userInfo.setAuthStatus(AuthStatusEnum.AUTH_RUN.getStatus());
         baseMapper.updateById(userInfo);
+    }
+
+//    用户列表
+    @Override
+    public IPage<UserInfo> selectPage(Page<UserInfo> pageParam, UserInfoQueryVo userInfoQueryVo) {
+//        获取条件值
+        String keyword = userInfoQueryVo.getKeyword();
+        Integer status = userInfoQueryVo.getStatus();
+        Integer authStatus = userInfoQueryVo.getAuthStatus();
+        String createTimeBegin = userInfoQueryVo.getCreateTimeBegin();
+        String createTimeEnd = userInfoQueryVo.getCreateTimeEnd();
+//        对条件值行判断
+        QueryWrapper<UserInfo> wrapper = new QueryWrapper<>();
+        if(StringUtils.hasLength(keyword)){
+            wrapper.eq("name", keyword);
+        }
+        if(!StringUtils.isEmpty(status)){
+            wrapper.eq("status", status);
+        }
+        if(!StringUtils.isEmpty(authStatus)){
+            wrapper.eq("auth_status", authStatus);
+        }
+        if (StringUtils.hasLength(createTimeBegin)){
+            wrapper.ge("create_time", createTimeBegin);
+        }
+        if (StringUtils.hasLength(createTimeEnd)){
+            wrapper.le("create_time", createTimeEnd);
+        }
+//        调用mapper的方法
+        Page<UserInfo> pages = baseMapper.selectPage(pageParam, wrapper);
+//        编号变成对应值封装
+        pages.getRecords().stream().forEach( item -> {
+            this.packageUserInfo(item);
+        });
+        return pages;
+    }
+
+//    编号变成对应值的封装
+    private UserInfo packageUserInfo(UserInfo item) {
+        item.getParam().put("authStatusString", AuthStatusEnum.getStatusNameByStatus(item.getAuthStatus()));
+//        处理用户状态
+        String stautsString = item.getStatus() == 0 ? "锁定" : "正常";
+        item.getParam().put("statusString" , stautsString);
+        return item;
     }
 }
