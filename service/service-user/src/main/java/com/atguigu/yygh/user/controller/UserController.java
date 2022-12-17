@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/admin/user")
 public class UserController {
@@ -28,5 +30,26 @@ public class UserController {
         IPage<UserInfo> pageModel = userInfoService.selectPage(pageParam, userInfoQueryVo);
         return Result.ok(pageModel);
     }
+//    用户锁定
+    @GetMapping("lock/{userId}/{status}")
+    public Result<Object> lock(@PathVariable Long userId, @PathVariable Integer status){
+        userInfoService.lock(userId, status);
+        return Result.ok();
+    }
+//    用户详情
+    @GetMapping("show/{userId}")
+    public Result<Object> show(@PathVariable Long userId){
+        Map<String, Object> map = userInfoService.show(userId);
+        return Result.ok(map);
+    }
 
+//    认证审批
+    @GetMapping("approval/{userId}/{authStatus}")
+    public Result<Object> approval(@PathVariable Long userId, @PathVariable Integer authStatus){
+        boolean status =  userInfoService.approval(userId, authStatus);
+        if(!status){
+            return Result.fail();
+        }
+        return Result.ok();
+    }
 }

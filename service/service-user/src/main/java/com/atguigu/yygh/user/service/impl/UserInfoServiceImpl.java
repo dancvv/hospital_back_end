@@ -4,8 +4,10 @@ import com.atguigu.yygh.common.exception.YyghException;
 import com.atguigu.yygh.common.helper.JwtHelper;
 import com.atguigu.yygh.common.result.ResultCodeEnum;
 import com.atguigu.yygh.enums.AuthStatusEnum;
+import com.atguigu.yygh.model.user.Patient;
 import com.atguigu.yygh.model.user.UserInfo;
 import com.atguigu.yygh.user.mapper.UserInfoMapper;
+import com.atguigu.yygh.user.service.PatientService;
 import com.atguigu.yygh.user.service.UserInfoService;
 import com.atguigu.yygh.vo.user.LoginVo;
 import com.atguigu.yygh.vo.user.UserAuthVo;
@@ -27,6 +29,8 @@ import java.util.Map;
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements UserInfoService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private PatientService patientService;
     //    用户手机号登陆接口
     @Override
     public Map<String, Object> loginUser(LoginVo loginVo) {
@@ -148,7 +152,45 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         return pages;
     }
 
-//    编号变成对应值的封装
+//    锁定用户
+    @Override
+    public void lock(Long userId, Integer status) {
+        if(status == 0 || status == 1){
+            UserInfo userInfo = this.getById(userId);
+            userInfo.setStatus(status);
+            this.updateById(userInfo);
+        }
+    }
+
+//    用户详情
+    @Override
+    public Map<String, Object> show(Long userId) {
+        HashMap<String, Object> map = new HashMap<>();
+//        根据userId 查询用户信息
+        UserInfo userInfo = this.packageUserInfo(baseMapper.selectById(userId));
+        map.put("userInfo", userInfo);
+//        根据userId查询就诊人信息
+        List<Patient> patienList = patientService.findAllUserId(userId);
+        map.put("patientList", patienList);
+        return map;
+    }
+
+//    认证审批 2:通过， -1:不通过
+    @Override
+    public boolean approval(Long userId, Integer authStatus) {
+        if(authStatus == 2 || authStatus == -1){
+            UserInfo userInfo = baseMapper.selectById(userId);
+//            如果用户处于锁定状态无法进行修改
+            if (userInfo.getStatus() == 0){
+                return false;
+            }
+            userInfo.setAuthStatus(authStatus);
+            baseMapper.updateById(userInfo);
+        }
+        return true;
+    }
+
+    //    编号变成对应值的封装
     private UserInfo packageUserInfo(UserInfo item) {
         item.getParam().put("authStatusString", AuthStatusEnum.getStatusNameByStatus(item.getAuthStatus()));
 //        处理用户状态
