@@ -3,7 +3,9 @@ package com.atguigu.yygh.controller;
 import com.atguigu.yygh.common.result.Result;
 import com.atguigu.yygh.common.utils.MD5;
 import com.atguigu.yygh.model.hosp.HospitalSet;
+import com.atguigu.yygh.model.hosp.Schedule;
 import com.atguigu.yygh.service.HospitalSetService;
+import com.atguigu.yygh.service.ScheduleService;
 import com.atguigu.yygh.vo.hosp.HospitalQueryVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -13,14 +15,28 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 //@CrossOrigin
 @RestController
 @RequestMapping("/admin/hosp/hospitalSet")
 public class HospitalSetController {
+
+    @Autowired
+    private ScheduleService scheduleService;
     @Autowired
     private HospitalSetService hospitalSetService;
+
+//    获取可预约排班数据
+    @GetMapping("auth/getBookingSchedule/{page}/{limit}/{hoscode}/{depcode}")
+    public Result<Object> getBookingSchedule(@PathVariable Integer page,
+                                             @PathVariable Integer limit,
+                                             @PathVariable String hoscode,
+                                             @PathVariable String depcode){
+        Map<String, Object> resMap = scheduleService.getBookingSchduleRule(page, limit, hoscode, depcode);
+        return Result.ok(resMap);
+    }
 
 //    1.测试，查询信息
     @Operation(summary = "查询医院")
@@ -28,9 +44,7 @@ public class HospitalSetController {
     public Result<Object> findAllHospitalSet(){
 //        调用service的方法
 //        返回的是json数据，默认做的转换
-        System.out.println("find all controller");
         List<HospitalSet> list = hospitalSetService.list();
-        System.out.println(list);
         return Result.ok(list);
     }
 //    2.删除医院逻辑设置
