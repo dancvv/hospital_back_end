@@ -21,4 +21,7 @@ public interface ScheduleService {
 
     //    获取可预约排班数据
     Map<String, Object> getBookingSchduleRule(Integer page, Integer limit, String hoscode, String depcode);
+
+    Schedule getById(String scheduleId);
+
 }

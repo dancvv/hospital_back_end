@@ -74,4 +74,11 @@ public class HospApiController {
         List<Schedule> list = scheduleService.getDetailSchedule(hoscode, depcode, workDate);
         return Result.ok(list);
     }
+
+//    根据id获取排班接口
+    @GetMapping("getSchedule/{scheduleId}")
+    public Result<Object> getSchedule(@PathVariable String scheduleId){
+        scheduleService.getById(scheduleId);
+        return Result.ok();
+    }
 }
