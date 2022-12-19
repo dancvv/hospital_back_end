@@ -93,7 +93,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         }
         map.put("name", name);
         String token = JwtHelper.createToken(userInfo.getId(), name);
-        System.out.println("token: " + token);
         map.put("token", token);
         return map;
     }

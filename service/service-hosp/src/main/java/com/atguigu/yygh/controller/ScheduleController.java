@@ -16,20 +16,4 @@ public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
 
-//    find by hosp serial number and department number
-//    query the schedule rules data
-    @GetMapping("getScheduleRule/{page}/{limit}/{hoscode}/{depcode}")
-    public Result<Object> getScheduleRule(@PathVariable long page,
-                                          @PathVariable long limit,
-                                          @PathVariable String hoscode,
-                                          @PathVariable String depcode){
-        Map<String, Object> resMap = scheduleService.getRuleSchedule(page, limit, hoscode, depcode);
-        return Result.ok(resMap);
-    }
-    // 根据医院编号、科室编号和工作日期，查询排班详细信息
-    @GetMapping("getScheduleDetail/{hoscode}/{depcode}/{workDate}")
-    public Result<Object> getScheduleDetail(@PathVariable String hoscode, @PathVariable String depcode, @PathVariable String workDate){
-        List<Schedule> list = scheduleService.getDetailSchedule(hoscode, depcode, workDate);
-        return Result.ok(list);
-    }
 }

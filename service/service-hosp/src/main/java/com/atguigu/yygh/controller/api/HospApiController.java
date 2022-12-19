@@ -2,8 +2,10 @@ package com.atguigu.yygh.controller.api;
 
 import com.atguigu.yygh.common.result.Result;
 import com.atguigu.yygh.model.hosp.Hospital;
+import com.atguigu.yygh.model.hosp.Schedule;
 import com.atguigu.yygh.service.DepartmentService;
 import com.atguigu.yygh.service.HospitalService;
+import com.atguigu.yygh.service.ScheduleService;
 import com.atguigu.yygh.vo.hosp.DepartmentVo;
 import com.atguigu.yygh.vo.hosp.HospitalQueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class HospApiController {
     @Autowired
     private DepartmentService departmentService;
 
+    @Autowired
+    private ScheduleService scheduleService;
 //    查询医院列表
     @GetMapping("findHospList/{page}/{limit}")
     public Result<Object> findHospList(@PathVariable int page,
@@ -49,5 +53,25 @@ public class HospApiController {
     public Result<Object> item(@PathVariable String hoscode){
         Map<String, Object> map =  hospitalService.item(hoscode);
         return Result.ok(map);
+    }
+
+    //    find by hosp serial number and department number
+//    query the schedule rules data
+    @GetMapping("/auth/getBookingScheduleRule/{page}/{limit}/{hoscode}/{depcode}")
+    public Result<Object> getScheduleRule(@PathVariable long page,
+                                          @PathVariable long limit,
+                                          @PathVariable String hoscode,
+                                          @PathVariable String depcode){
+        Map<String, Object> resMap = scheduleService.getRuleSchedule(page, limit, hoscode, depcode);
+        System.out.println("resMap:" + resMap);
+        return Result.ok(resMap);
+    }
+    // 根据医院编号、科室编号和工作日期，查询排班详细信息
+    @GetMapping("auth/findScheduleList/{hoscode}/{depcode}/{workDate}")
+    public Result<Object> getScheduleDetail(@PathVariable String hoscode,
+                                            @PathVariable String depcode,
+                                            @PathVariable String workDate){
+        List<Schedule> list = scheduleService.getDetailSchedule(hoscode, depcode, workDate);
+        return Result.ok(list);
     }
 }
