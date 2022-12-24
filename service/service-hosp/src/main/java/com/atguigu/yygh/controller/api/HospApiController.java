@@ -57,13 +57,22 @@ public class HospApiController {
 
     //    find by hosp serial number and department number
 //    query the schedule rules data
-    @GetMapping("/auth/getBookingScheduleRule/{page}/{limit}/{hoscode}/{depcode}")
+    @GetMapping("/auth2/getBookingScheduleRule/{page}/{limit}/{hoscode}/{depcode}")
     public Result<Object> getScheduleRule(@PathVariable long page,
                                           @PathVariable long limit,
                                           @PathVariable String hoscode,
                                           @PathVariable String depcode){
         Map<String, Object> resMap = scheduleService.getRuleSchedule(page, limit, hoscode, depcode);
-        System.out.println("resMap:" + resMap);
+        return Result.ok(resMap);
+    }
+
+    //    获取可预约排班数据
+    @GetMapping("/auth/getBookingScheduleRule/{page}/{limit}/{hoscode}/{depcode}")
+    public Result<Object> getBookingSchedule(@PathVariable Integer page,
+                                             @PathVariable Integer limit,
+                                             @PathVariable String hoscode,
+                                             @PathVariable String depcode){
+        Map<String, Object> resMap = scheduleService.getBookingSchduleRule(page, limit, hoscode, depcode);
         return Result.ok(resMap);
     }
     // 根据医院编号、科室编号和工作日期，查询排班详细信息
@@ -78,7 +87,7 @@ public class HospApiController {
 //    根据id获取排班接口
     @GetMapping("getSchedule/{scheduleId}")
     public Result<Object> getSchedule(@PathVariable String scheduleId){
-        scheduleService.getById(scheduleId);
-        return Result.ok();
+        Schedule schedule = scheduleService.getById(scheduleId);
+        return Result.ok(schedule);
     }
 }

@@ -218,42 +218,43 @@ public class ScheduleServiceImpl implements ScheduleService {
         );
         AggregationResults<BookingScheduleRuleVo> aggregationResults = mongoTemplate.aggregate(agg, Schedule.class, BookingScheduleRuleVo.class);
         List<BookingScheduleRuleVo> scheduleVoList = aggregationResults.getMappedResults();
-//        获取科室剩余预约数
+        //获取科室剩余预约数
 
-//        合并数据
-        HashMap<Date, BookingScheduleRuleVo> scheduleVoMap = new HashMap<>();
-        if(!CollectionUtils.isEmpty(scheduleVoList)){
-//           原始导入出错是因为使用的方法不对
-            Map<Date, BookingScheduleRuleVo> collect = scheduleVoList.stream().collect(Collectors.toMap(BookingScheduleRuleVo::getWorkDate, BookingScheduleRuleVo -> BookingScheduleRuleVo));
+        //合并数据 将统计数据ScheduleVo根据“安排日期”合并到BookingRuleVo
+        Map<Date, BookingScheduleRuleVo> scheduleVoMap = new HashMap<>();
+        if(!CollectionUtils.isEmpty(scheduleVoList)) {
+            scheduleVoMap = scheduleVoList.stream().collect(Collectors.toMap(BookingScheduleRuleVo::getWorkDate, BookingScheduleRuleVo -> BookingScheduleRuleVo));
         }
-//        获取可预约排班规则
-        ArrayList<BookingScheduleRuleVo> bookingScheduleRuleVoList = new ArrayList<>();
-        for (int i = 0, len = dateList.size(); i < len ; i++) {
+        //获取可预约排班规则
+        List<BookingScheduleRuleVo> bookingScheduleRuleVoList = new ArrayList<>();
+        for(int i=0, len=dateList.size(); i<len; i++) {
             Date date = dateList.get(i);
+
             BookingScheduleRuleVo bookingScheduleRuleVo = scheduleVoMap.get(date);
-            if(null == bookingScheduleRuleVo){// 说明当天没有排班医生
-                BookingScheduleRuleVo bookingScheduleRuleVo1 = new BookingScheduleRuleVo();
-//                就诊医生人数
+            if(null == bookingScheduleRuleVo) { // 说明当天没有排班医生
+                bookingScheduleRuleVo = new BookingScheduleRuleVo();
+                //就诊医生人数
                 bookingScheduleRuleVo.setDocCount(0);
-//                科室剩余数 -1 表示无号
+                //科室剩余预约数  -1表示无号
                 bookingScheduleRuleVo.setAvailableNumber(-1);
             }
             bookingScheduleRuleVo.setWorkDate(date);
             bookingScheduleRuleVo.setWorkDateMd(date);
-//            计算当前预约日期为星期几
+            //计算当前预约日期为周几
             String dayOfWeek = this.getDayOfWeek(new DateTime(date));
             bookingScheduleRuleVo.setDayOfWeek(dayOfWeek);
-//            最后一页最后一条记录为即将预约状态 0， 正常 1， 即将放号 -1。 当天已停止挂号
-            if(i == len - 1 && page == iPage.getPages()){
+
+            //最后一页最后一条记录为即将预约   状态 0：正常 1：即将放号 -1：当天已停止挂号
+            if(i == len-1 && page == iPage.getPages()) {
                 bookingScheduleRuleVo.setStatus(1);
-            }else{
+            } else {
                 bookingScheduleRuleVo.setStatus(0);
             }
-//            当天预约如果过了停号时间，不能预约
-            if(i == 0 && page == 1){
+            //当天预约如果过了停号时间， 不能预约
+            if(i == 0 && page == 1) {
                 DateTime stopTime = this.getDateTime(new Date(), bookingRule.getStopTime());
-                if(stopTime.isBeforeNow()){
-//                    停止预约
+                if(stopTime.isBeforeNow()) {
+                    //停止预约
                     bookingScheduleRuleVo.setStatus(-1);
                 }
             }
@@ -286,8 +287,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public Schedule getById(String scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).get();
-        this.packageSchedule(schedule);
-        return schedule;
+        return this.packageSchedule(schedule);
     }
 
     private IPage getListDate(Integer page, Integer limit, BookingRule bookingRule) {
@@ -323,19 +323,20 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     private DateTime getDateTime(Date date, String timeString) {
-        String dateTimeString = new DateTime(date).toString("yyyy-MM-dd") + "" + timeString;
+        String dateTimeString = new DateTime(date).toString("yyyy-MM-dd") + " " + timeString;
         DateTime dateTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm").parseDateTime(dateTimeString);
         return dateTime;
     }
 
     // 封装排班详情其他值 医院名称/科室名称/日期对应星期
-    private void packageSchedule(Schedule item) {
+    private Schedule packageSchedule(Schedule item) {
         // 设置医院名称
         item.getParam().put("hosname", hospitalService.getHospName(item.getHoscode()));
         // 设置科室名称
         item.getParam().put("depname", departmentService.getDepName(item.getHoscode(), item.getDepcode()));
         // 设置日期对应星期
         item.getParam().put("dayOfWeek", this.getDayOfWeek(new DateTime(item.getWorkDate())));
+        return item;
     }
 
 }

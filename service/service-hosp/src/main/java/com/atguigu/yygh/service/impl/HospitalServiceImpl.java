@@ -87,7 +87,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     //        获取查询list集合，遍历进行医院等级封装
     private Hospital setHostpitalHosType(Hospital item) {
-        System.out.println(item.toString());
+//        System.out.println(item.toString());
 //        根据dictcode和value获取医院等级名称
         System.out.println(item.getCityCode());
         String hostypeString = dictFeignClient.getName("Hostype", item.getHostype());
