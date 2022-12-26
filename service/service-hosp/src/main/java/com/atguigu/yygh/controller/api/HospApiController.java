@@ -5,9 +5,12 @@ import com.atguigu.yygh.model.hosp.Hospital;
 import com.atguigu.yygh.model.hosp.Schedule;
 import com.atguigu.yygh.service.DepartmentService;
 import com.atguigu.yygh.service.HospitalService;
+import com.atguigu.yygh.service.HospitalSetService;
 import com.atguigu.yygh.service.ScheduleService;
 import com.atguigu.yygh.vo.hosp.DepartmentVo;
 import com.atguigu.yygh.vo.hosp.HospitalQueryVo;
+import com.atguigu.yygh.vo.hosp.ScheduleOrderVo;
+import com.atguigu.yygh.vo.order.SignInfoVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,9 +28,10 @@ public class HospApiController {
     private HospitalService hospitalService;
     @Autowired
     private DepartmentService departmentService;
-
     @Autowired
     private ScheduleService scheduleService;
+    @Autowired
+    private HospitalSetService hospitalSetService;
 //    查询医院列表
     @GetMapping("findHospList/{page}/{limit}")
     public Result<Object> findHospList(@PathVariable int page,
@@ -89,5 +93,17 @@ public class HospApiController {
     public Result<Object> getSchedule(@PathVariable String scheduleId){
         Schedule schedule = scheduleService.getById(scheduleId);
         return Result.ok(schedule);
+    }
+
+//    根据排班id获取预约下单数据
+    @GetMapping("inner/getScheduleOrderVo/{scheduleId}")
+    public ScheduleOrderVo getScheduleOrderVo(@PathVariable String scheduleId){
+        return scheduleService.getScheduleOrderVo(scheduleId);
+    }
+
+//    获取医院签名信息
+    @GetMapping("inner/getSignInfoVo/{hoscode}")
+    public SignInfoVo getSignInfoVo(@PathVariable String hoscode){
+        return hospitalSetService.getSignInfoVo(hoscode);
     }
 }
