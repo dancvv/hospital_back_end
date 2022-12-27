@@ -39,6 +39,12 @@
             <artifactId>jasypt-spring-boot-starter</artifactId>
             <version>3.0.4</version>
         </dependency>
+<!--        mq队列-->
+        <dependency>
+            <groupId>com.atguigu.yygh</groupId>
+            <artifactId>rabbit-util</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

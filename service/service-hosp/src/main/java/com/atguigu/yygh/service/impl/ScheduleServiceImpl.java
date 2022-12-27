@@ -338,6 +338,14 @@ public class ScheduleServiceImpl extends ServiceImpl<ScheduleMapper, Schedule> i
         return scheduleOrderVo;
     }
 
+//    更新排班数据 , 用于mq
+    @Override
+    public void update(Schedule schedule) {
+        schedule.setUpdateTime(new Date());
+        scheduleRepository.save(schedule);
+
+    }
+
     private IPage getListDate(Integer page, Integer limit, BookingRule bookingRule) {
 //        当天放号时间
         DateTime releaseTime = this.getDateTime(new Date(), bookingRule.getReleaseTime());

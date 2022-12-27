@@ -14,6 +14,7 @@
     <modules>
         <module>service-cmn-client</module>
         <module>service-user-client</module>
+        <module>service-hosp-client</module>
     </modules>
 
     <properties>
