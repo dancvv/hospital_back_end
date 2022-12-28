@@ -16,7 +16,10 @@ import com.atguigu.yygh.user.client.PatientFeignClient;
 import com.atguigu.yygh.vo.hosp.ScheduleOrderVo;
 import com.atguigu.yygh.vo.msm.MsmVo;
 import com.atguigu.yygh.vo.order.OrderMqVo;
+import com.atguigu.yygh.vo.order.OrderQueryVo;
 import com.atguigu.yygh.vo.order.SignInfoVo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.joda.time.DateTime;
 import org.springframework.beans.BeanUtils;
@@ -40,7 +43,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
     @Override
     public Long saveOrder(String scheduleId, Long patientId) {
 //        获取就诊人信息
-        Patient patient = patientFeignClient.getPatient(patientId);
+        Patient patient = patientFeignClient.getPatientOrder(patientId);
         if(null == patient){
             throw new YyghException(ResultCodeEnum.PARAM_ERROR);
         }
@@ -50,7 +53,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
 
 //        判断当前时间是否还可以预约
         if(new DateTime(scheduleOrderVo.getStartTime()).isAfterNow() ||
-        new DateTime((scheduleOrderVo.getEndTime())).isBeforeNow()){
+                new DateTime((scheduleOrderVo.getEndTime())).isBeforeNow()){
             throw new YyghException(ResultCodeEnum.TIME_NO);
         }
 
@@ -69,6 +72,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
         orderInfo.setPatientName(patient.getName());
         orderInfo.setPatientPhone(patient.getPhone());
         orderInfo.setOrderStatus(OrderStatusEnum.UNPAID.getStatus());
+//        this.save(orderInfo);
         baseMapper.insert(orderInfo);
 //        调用医院接口，实现预约挂号操作
 //        设置需要的参数，放到map
@@ -153,5 +157,22 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
 
 
         return orderInfo.getId();
+    }
+
+//    订单列表
+    @Override
+    public IPage<OrderInfo> selectPage(Page<OrderInfo> pageParam, OrderQueryVo orderQueryVo) {
+        return null;
+    }
+
+    @Override
+    public boolean insertOne() {
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setOrderStatus(1);
+        orderInfo.setUserId(12L);
+        orderInfo.setHoscode("dfdf");
+
+        this.save(orderInfo);
+        return true;
     }
 }

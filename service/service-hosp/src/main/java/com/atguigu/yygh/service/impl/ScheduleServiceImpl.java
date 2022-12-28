@@ -298,7 +298,8 @@ public class ScheduleServiceImpl extends ServiceImpl<ScheduleMapper, Schedule> i
     public ScheduleOrderVo getScheduleOrderVo(String scheduleId) {
         ScheduleOrderVo scheduleOrderVo = new ScheduleOrderVo();
 //        排班信息
-        Schedule schedule = baseMapper.selectById(scheduleId);
+//        Schedule schedule = baseMapper.selectById(scheduleId);
+        Schedule schedule = this.getById(scheduleId);
         if(null == schedule){
             throw new YyghException(ResultCodeEnum.PARAM_ERROR);
         }
