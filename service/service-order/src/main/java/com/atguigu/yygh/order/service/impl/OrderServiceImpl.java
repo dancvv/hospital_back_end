@@ -217,7 +217,20 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
         OrderInfo orderInfo = baseMapper.selectById(orderId);
         return this.packOrderInfo(orderInfo);
     }
-//    封装消息
+
+    //    获取订单
+    @Override
+    public Map<String, Object> show(Long id) {
+        Map<String, Object> map = new HashMap<>();
+        OrderInfo orderInfo = this.packOrderInfo(this.getById(id));
+        map.put("orderInfo", orderInfo);
+        Patient patient
+                =  patientFeignClient.getPatientOrder(orderInfo.getPatientId());
+        map.put("patient", patient);
+        return map;
+    }
+
+    //    封装消息
     private OrderInfo packOrderInfo(OrderInfo orderInfo) {
         orderInfo.getParam().put("orderStatusString", OrderStatusEnum.getStatusNameByStatus(orderInfo.getOrderStatus()));
         return orderInfo;
