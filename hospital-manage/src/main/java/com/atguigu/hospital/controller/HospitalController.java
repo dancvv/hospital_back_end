@@ -48,6 +48,7 @@ public class HospitalController {
 			}
 
 			Map<String, Object> resultMap = hospitalService.submitOrder(paramMap);
+			System.out.println(resultMap.toString());
 			return Result.ok(resultMap);
 		} catch (YyghException e) {
 			return Result.fail().message(e.getMessage());

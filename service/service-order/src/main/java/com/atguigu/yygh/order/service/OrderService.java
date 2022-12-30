@@ -13,4 +13,7 @@ public interface OrderService extends IService<OrderInfo> {
     IPage<OrderInfo> selectPage(Page<OrderInfo> pageParam, OrderQueryVo orderQueryVo);
 
     boolean insertOne();
+
+    //    根据订单id查询订单详情
+    OrderInfo getOrder(String orderId);
 }

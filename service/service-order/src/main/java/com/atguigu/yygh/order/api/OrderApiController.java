@@ -54,4 +54,11 @@ public class OrderApiController {
         boolean isInsert = orderService.insertOne();
         return Result.ok(isInsert);
     }
+
+//    根据订单id查询订单详情
+    @GetMapping("auth/getOrders/{orderId}")
+    public Result<Object> getOrders(@PathVariable String orderId){
+        OrderInfo orderInfo = orderService.getOrder(orderId);
+        return Result.ok(orderInfo);
+    }
 }
