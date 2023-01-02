@@ -7,4 +7,6 @@ public interface WeixinService {
 
     //        调用微信接口实现支付状态查询
     Map<String, String> queryPayStatus(Long orderId);
+//    退款
+    Boolean refund(Long orderId);
 }
