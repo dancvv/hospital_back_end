@@ -21,4 +21,7 @@ public interface OrderService extends IService<OrderInfo> {
 
     //    获取订单
     Map<String, Object> show(Long id);
+
+//    取消订单
+    Object cancelOrder(Long orderId);
 }

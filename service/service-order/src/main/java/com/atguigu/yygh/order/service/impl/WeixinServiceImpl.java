@@ -139,21 +139,23 @@ public class WeixinServiceImpl implements WeixinService {
             }
     //        调用微信接口，实现退款
     //        封装需要参数
-            HashMap<String, String> paramMap = new HashMap<>();
+            Map<String,String> paramMap = new HashMap<>();
             paramMap.put("appid",ConstantPropertiesUtils.APPID);       //公众账号ID
             paramMap.put("mch_id",ConstantPropertiesUtils.PARTNER);   //商户编号
             paramMap.put("nonce_str",WXPayUtil.generateNonceStr());
             paramMap.put("transaction_id",paymentInfo.getTradeNo()); //微信订单号
             paramMap.put("out_trade_no",paymentInfo.getOutTradeNo()); //商户订单编号
             paramMap.put("out_refund_no","tk"+paymentInfo.getOutTradeNo()); //商户退款单号
-            paramMap.put("total_free", "1");
-            paramMap.put("refund_fee", "1");
-            String paramXml = WXPayUtil.generateSignedXml(paramMap, ConstantPropertiesUtils.PARTNERKEY);
-//            设置调用接口内容
+//       paramMap.put("total_fee",paymentInfoQuery.getTotalAmount().multiply(new BigDecimal("100")).longValue()+"");
+//       paramMap.put("refund_fee",paymentInfoQuery.getTotalAmount().multiply(new BigDecimal("100")).longValue()+"");
+            paramMap.put("total_fee","1");
+            paramMap.put("refund_fee","1");
+            String paramXml = WXPayUtil.generateSignedXml(paramMap,ConstantPropertiesUtils.PARTNERKEY);
+            //设置调用接口内容
             HttpClient client = new HttpClient("https://api.mch.weixin.qq.com/secapi/pay/refund");
             client.setXmlParam(paramXml);
             client.setHttps(true);
-//            设置证书的信息
+            //设置证书信息
             client.setCert(true);
             client.setCertPassword(ConstantPropertiesUtils.PARTNER);
             client.post();

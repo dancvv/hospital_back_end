@@ -46,10 +46,6 @@ public class HospitalReceiver {
             schedule.setAvailableNumber(availableNumber);
             scheduleService.update(schedule);
         }
-//        Schedule schedule = scheduleService.getById(orderMqVo.getScheduleId());
-//        schedule.setReservedNumber(orderMqVo.getReservedNumber());
-//        schedule.setAvailableNumber(orderMqVo.getAvailableNumber());
-//        scheduleService.update(schedule);
         //发送短信
         MsmVo msmVo = orderMqVo.getMsmVo();
         if(null != msmVo) {
