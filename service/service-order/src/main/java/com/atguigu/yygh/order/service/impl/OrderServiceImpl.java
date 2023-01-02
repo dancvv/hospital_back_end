@@ -56,7 +56,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
 //        判断当前时间是否还可以预约
         if(new DateTime(scheduleOrderVo.getStartTime()).isAfterNow() ||
                 new DateTime(scheduleOrderVo.getEndTime()).isBeforeNow()){
-            throw new YyghException(ResultCodeEnum.TIME_NO);
+//            log.trace("当前时间不可预约");
+            System.out.println("当前时间不可预约");
+//            throw new YyghException(ResultCodeEnum.TIME_NO);
         }
 
 //        获取签名信息

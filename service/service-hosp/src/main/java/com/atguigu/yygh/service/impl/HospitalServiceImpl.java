@@ -89,7 +89,7 @@ public class HospitalServiceImpl implements HospitalService {
     private Hospital setHostpitalHosType(Hospital item) {
 //        System.out.println(item.toString());
 //        根据dictcode和value获取医院等级名称
-        System.out.println(item.getCityCode());
+//        System.out.println(item.getCityCode());
         String hostypeString = dictFeignClient.getName("Hostype", item.getHostype());
 //        查询省市区
         String provinceString = dictFeignClient.getName(item.getProvinceCode());

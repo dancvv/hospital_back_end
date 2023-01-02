@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -41,7 +40,7 @@ public class WeixinServiceImpl implements WeixinService {
     //        2向支付记录表添加信息
             paymentService.savePaymentInfo(order, PaymentTypeEnum.WEIXIN.getStatus());
     //        3设置参数，调用微信生成二维码接口
-            HashMap paramMap = new HashMap<>();
+            Map paramMap = new HashMap<>();
             paramMap.put("appid", ConstantPropertiesUtils.APPID);
             paramMap.put("mch_id", ConstantPropertiesUtils.PARTNER);
             paramMap.put("nonce_str", WXPayUtil.generateNonceStr());
@@ -81,6 +80,37 @@ public class WeixinServiceImpl implements WeixinService {
 
             return map;
 
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    //        调用微信接口实现支付状态查询
+    @Override
+    public Map<String, String> queryPayStatus(Long orderId) {
+        try {
+    //        1 根据orderId获取订单信息
+            OrderInfo orderInfo = orderService.getById(orderId);
+
+    //        2 封装提交参数
+            Map paramMap = new HashMap<>();
+            paramMap.put("appid", ConstantPropertiesUtils.APPID);
+            paramMap.put("mch_id", ConstantPropertiesUtils.PARTNER);
+            paramMap.put("out_trade_no", orderInfo.getOutTradeNo());
+            paramMap.put("nonce_str", WXPayUtil.generateNonceStr());
+
+    //        3 设置请求内容
+            HttpClient client = new HttpClient("https://api.mch.weixin.qq.com/pay/orderquery");
+            client.setXmlParam(WXPayUtil.generateSignedXml(paramMap, ConstantPropertiesUtils.PARTNERKEY));
+            client.setHttps(true);
+            client.post();
+//        4 得到微信接口返回数据
+            String xml = client.getContent();
+            Map<String, String> resultMap = WXPayUtil.xmlToMap(xml);
+            System.out.println("支付状态resultMap："+resultMap);
+
+//        5 把接口数据返回
+            return resultMap;
         } catch (Exception e) {
             return null;
         }
