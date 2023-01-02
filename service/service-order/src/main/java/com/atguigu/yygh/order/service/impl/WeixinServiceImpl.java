@@ -161,6 +161,8 @@ public class WeixinServiceImpl implements WeixinService {
             client.post();
 //            接收返回第三方的数据
             String xml = client.getContent();
+            System.out.println("xml");
+            System.out.println(xml);
             Map<String, String> resultMap = WXPayUtil.xmlToMap(xml);
             if (null != resultMap && WXPayConstants.SUCCESS.equalsIgnoreCase(resultMap.get("result_code"))) {
                 refundInfo.setCallbackTime(new Date());

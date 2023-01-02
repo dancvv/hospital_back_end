@@ -1,9 +1,11 @@
 package com.atguigu.yygh.msm.receiver;
 
+import com.alibaba.fastjson.JSONObject;
 import com.atguigu.common.rabbit.constant.MqConst;
 import com.atguigu.yygh.msm.service.MsmService;
 import com.atguigu.yygh.vo.msm.MsmVo;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.tools.json.JSONUtil;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
@@ -21,8 +23,9 @@ public class MsmReceiver {
             exchange = @Exchange(value = MqConst.EXCHANGE_DIRECT_MSM),
             key = {MqConst.ROUTING_MSM_ITEM}
     ))
-    public void send(MsmVo msmVo, Message message, Channel channel) {
-        msmService.send(msmVo);
+    public void send(String msmVo, Message message, Channel channel) {
+        MsmVo convertMsmVo = JSONObject.parseObject(msmVo, MsmVo.class);
+        msmService.send(convertMsmVo);
     }
 
 

@@ -24,4 +24,7 @@ public interface OrderService extends IService<OrderInfo> {
 
 //    取消订单
     Object cancelOrder(Long orderId);
+
+//    就诊通知
+    void patientTips();
 }
