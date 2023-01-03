@@ -5,6 +5,7 @@ import com.atguigu.yygh.common.utils.AuthContextHolder;
 import com.atguigu.yygh.enums.OrderStatusEnum;
 import com.atguigu.yygh.model.order.OrderInfo;
 import com.atguigu.yygh.order.service.OrderService;
+import com.atguigu.yygh.vo.order.OrderCountQueryVo;
 import com.atguigu.yygh.vo.order.OrderQueryVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -67,4 +68,9 @@ public class OrderApiController {
         return Result.ok(orderService.cancelOrder(orderId));
     }
 
+//    获取订单统计数据
+    @PostMapping("/inner/getCountMap")
+    public Map<String, Object> getCountMap(@RequestBody OrderCountQueryVo orderCountQueryVo){
+        return orderService.getCountMap(orderCountQueryVo);
+    }
 }
