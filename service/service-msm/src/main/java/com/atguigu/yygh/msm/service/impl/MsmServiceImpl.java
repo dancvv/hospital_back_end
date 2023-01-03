@@ -78,6 +78,8 @@ public class MsmServiceImpl implements MsmService {
     public boolean send(MsmVo msmVo) {
         if(StringUtils.hasLength(msmVo.getPhone())){
             String code = (String) msmVo.getParam().get("code");
+//            传入123456，验证短信发送功能，运行之后检查手机能否收到
+            msmVo.getParam().put("code", "123456");
             boolean isSend = this.send(msmVo.getPhone(), msmVo.getParam());
             return isSend;
         }
@@ -86,6 +88,9 @@ public class MsmServiceImpl implements MsmService {
 
 //    针对mq的send方法
     private boolean send(String phone, Map<String, Object> param){
+//        不使用模版，使用随机参数
+        HashMap<String, String> codeParam = new HashMap<>();
+        codeParam.put("code", param.get("code").toString());
         //        判断手机号是否为空
         if(!StringUtils.hasLength(phone)){
            return  false;
@@ -116,7 +121,7 @@ public class MsmServiceImpl implements MsmService {
                 .phoneNumbers(phone)
                 .signName("我的java网站学习项目")
                 .templateCode("SMS_264155029")
-                .templateParam(JSONObject.toJSONString(param))
+                .templateParam(JSONObject.toJSONString(codeParam))
                 .build();
         try {
             CompletableFuture<SendSmsResponse> response = client.sendSms(sendSmsRequest);

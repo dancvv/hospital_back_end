@@ -16,5 +16,5 @@ public interface OrderFeignClient {
      * 根据排班id获取预约下单数据
      */
     @PostMapping("/api/order/orderInfo/inner/getCountMap")
-    public Map<String, Object> getCountMap(@RequestBody OrderCountQueryVo orderCountQueryVo);
+    Map<String, Object> getCountMap(@RequestBody OrderCountQueryVo orderCountQueryVo);
 }

@@ -3,7 +3,6 @@ package com.atguigu.yygh.statistic.controller;
 import com.atguigu.yygh.common.result.Result;
 import com.atguigu.yygh.order.client.OrderFeignClient;
 import com.atguigu.yygh.vo.order.OrderCountQueryVo;
-import com.atguigu.yygh.vo.order.OrderCountVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

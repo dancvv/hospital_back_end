@@ -316,7 +316,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderInfo> implem
                 put("name", orderInfo.getPatientName());
             }};
             msmVo.setParam(param);
-//            rabbitService.sendMessage(MqConst.EXCHANGE_DIRECT_MSM, MqConst.ROUTING_MSM_ITEM, msmVo);
+            rabbitService.sendMessage(MqConst.EXCHANGE_DIRECT_MSM, MqConst.ROUTING_MSM_ITEM, msmVo);
         }
 
     }
