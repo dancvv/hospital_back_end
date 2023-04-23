@@ -15,3 +15,6 @@ jasypt.encryptor.algorithm=PBEWithMD5AndDES
 [后台管理系统](https://github.com/dancvv/hospital_front_end)
 
 [前台用户系统](https://github.com/dancvv/hospital_front_nuxt)
+
+## 更新内容
+添加了数据库sql表
